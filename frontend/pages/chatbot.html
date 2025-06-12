@@ -58,6 +58,34 @@
       overflow: hidden;
     }
 
+    /* Page Loader for initial settings fetch */
+    #page-loader-chatbot {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--bg); /* Use CSS var for background */
+        display: flex; /* Initially shown by JS */
+        justify-content: center;
+        align-items: center;
+        z-index: 10000; /* Highest z-index */
+        opacity: 1;
+        transition: opacity 0.3s ease-out;
+    }
+    #page-loader-chatbot .spinner {
+        width: 50px;
+        height: 50px;
+        border: 5px solid var(--text-secondary); /* Use CSS var */
+        border-top-color: var(--accent-primary); /* Use CSS var */
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+    }
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+
+
     .btn::before {
       content: '';
       position: absolute;
@@ -614,13 +642,15 @@
       color: white;
       padding: 12px 24px;
       border-radius: 4px;
-      z-index: 1000;
+      z-index: 10000; /* Ensure toast is above page loader */
       opacity: 0;
       transition: opacity 0.3s;
     }
     .toast.show {
       opacity: 1;
     }
+    .toast.error { background-color: #e53935; } /* Error style for toast */
+
 
     /* Input container */
     .input-container {
@@ -1184,6 +1214,10 @@
   </style>
 </head>
 <body>
+<div id="page-loader-chatbot"> <!-- Page loader element -->
+    <div class="spinner"></div>
+</div>
+
 <div class="app-container" id="app-container">
 <aside class="sidebar" id="sidebar">
 <div class="sidebar-header">
@@ -1294,9 +1328,10 @@
     const serverUrl = "https://classmate1-ffw7.onrender.com";
     const style = document.createElement("style"); 
     const toast = document.getElementById("toast");
-    const themeToggleBtn = document.getElementById("theme-toggle-btn"); // This is the chatbot's theme toggle
+    const themeToggleBtn = document.getElementById("theme-toggle-btn");
+    const pageLoader = document.getElementById('page-loader-chatbot');
 
-    // REMOVE: let isDarkMode = localStorage.getItem("darkMode_ClassMate") === "true";
+
     let currentChatId = null;
     let allChats = {}; 
     let recognition = null;
@@ -1308,8 +1343,9 @@
     let chatToRename = null;
     let chatToDelete = null;
     
+    let currentUserSettings = null; // To store fetched user settings
 
-    let promptBase = `You are **ClassMate**, an AI-powered student assistant designed to help users manage academics, track goals, organize tasks, and stay motivated. You have a friendly, supportive, and helpful personality. Your tone adapts to the user — casual if they’re casual, serious when they are serious.
+    let defaultPromptBase = `You are **ClassMate**, an AI-powered student assistant designed to help users manage academics, track goals, organize tasks, and stay motivated. You have a friendly, supportive, and helpful personality. Your tone adapts to the user — casual if they’re casual, serious when they are serious.
 
 ---
 
@@ -1373,7 +1409,60 @@ Phase 2: [e.g., Data Structures and Control Flow]
 (Add more phases and tasks as appropriate for the user\'s request)
 
 Remember to break your goals into phases and tasks.`;
-        function checkForQueryParameters() {
+
+    function getAuthToken() {
+        return localStorage.getItem('auth_token');
+    }
+
+    async function fetchUserSettings() {
+        const token = getAuthToken();
+        if (!token) {
+            console.warn("No auth token found. Cannot fetch user settings.");
+            showToast("Authentication required. Please log in.", "error");
+            if (window.parent && window.parent !== window) {
+                window.parent.postMessage({ type: 'logout', reason: 'no_token_chatbot' }, '*');
+            }
+            // Potentially redirect to login if standalone, or disable chat features
+            return null;
+        }
+
+        try {
+            const response = await fetch(`${serverUrl}/api/me`, {
+                headers: { 'Authorization': `Bearer ${token}` }
+            });
+
+            if (response.status === 401) {
+                console.error("Unauthorized (401) fetching user settings.");
+                showToast("Session expired. Please log in again.", "error", 5000);
+                localStorage.removeItem('auth_token');
+                if (window.parent && window.parent !== window) {
+                    window.parent.postMessage({ type: 'logout', reason: 'unauthorized_chatbot_settings' }, '*');
+                } else {
+                    // Handle standalone redirect if necessary, e.g., window.location.href = 'login.html';
+                }
+                return null;
+            }
+
+            if (!response.ok) {
+                console.error(`Error fetching user settings: ${response.status} ${response.statusText}`);
+                const errorData = await response.text();
+                console.error("Error details:", errorData);
+                showToast(`Failed to load settings: ${response.statusText}`, "error");
+                return null;
+            }
+            const settings = await response.json();
+            currentUserSettings = settings;
+            console.log("User settings fetched:", currentUserSettings);
+            return settings;
+        } catch (error) {
+            console.error("Network error fetching user settings:", error);
+            showToast("Network error fetching settings. Please check your connection.", "error", 5000);
+            return null;
+        }
+    }
+
+
+    function checkForQueryParameters() {
         const urlParams = new URLSearchParams(window.location.search);
         const query = urlParams.get("query");
         
@@ -1397,14 +1486,22 @@ Remember to break your goals into phases and tasks.`;
             themeToggleBtn.innerHTML = isNowDark ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
             themeToggleBtn.title = isNowDark ? "Toggle Light Mode" : "Toggle Dark Mode";
         }
+         if (pageLoader) { // Update page loader background if visible
+            pageLoader.style.backgroundColor = getComputedStyle(document.body).getPropertyValue('--bg');
+        }
     }
 
-    // Call on initial load, before other initializations if theme affects them visually.
     applyThemeSynchronized();
 
     window.addEventListener('storage', (e) => {
         if (e.key === 'darkMode') {
             applyThemeSynchronized();
+        }
+        if (e.key === 'auth_token' && !e.newValue) { // Token removed externally
+            showToast("Logged out. Please log in again.", "error", 5000);
+            if (window.parent && window.parent !== window) {
+                window.parent.postMessage({ type: 'logout', reason: 'token_cleared_external_chatbot' }, '*');
+            }
         }
     });
 
@@ -1415,6 +1512,9 @@ Remember to break your goals into phases and tasks.`;
                 themeToggleBtn.innerHTML = e.detail.darkMode ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
                 themeToggleBtn.title = e.detail.darkMode ? "Toggle Light Mode" : "Toggle Dark Mode";
             }
+             if (pageLoader) { 
+                pageLoader.style.backgroundColor = getComputedStyle(document.body).getPropertyValue('--bg');
+            }
         }
     });
 
@@ -1424,6 +1524,9 @@ Remember to break your goals into phases and tasks.`;
             localStorage.setItem("darkMode", bodyIsDarkNow ? "enabled" : "disabled"); // Update SHARED key
             themeToggleBtn.innerHTML = bodyIsDarkNow ? '<i class="fas fa-sun"></i>' : '<i class="fas fa-moon"></i>';
             themeToggleBtn.title = bodyIsDarkNow ? "Toggle Light Mode" : "Toggle Dark Mode";
+             if (pageLoader) {
+                pageLoader.style.backgroundColor = getComputedStyle(document.body).getPropertyValue('--bg');
+            }
         });
     }
     // --- END OF THEME SYNCHRONIZATION LOGIC ---
@@ -1667,8 +1770,16 @@ Remember to break your goals into phases and tasks.`;
 
     function startNewChat(switchToNew = true) {
         if (currentChatId && allChats[currentChatId] && allChats[currentChatId].messages.length === 0) {
-            return;
+            // If current chat is new and empty, don't create another one, just stay
+             if (switchToNew) { // If called with switchToNew=true, it means user explicitly clicked "New Chat"
+                // Proceed to create a new one even if current is empty, but only if currentChatId is not null
+                 if(currentChatId === null) { /* no chat exists, so proceed */ }
+                 else { /* a chat exists, could be empty, but new chat was clicked */ }
+             } else { // if called with switchToNew=false (e.g. initial load, or after delete), don't create if current is empty
+                 return;
+             }
         }
+
 
         const newChatId = `chat_${Date.now()}`;
         allChats[newChatId] = {
@@ -1895,7 +2006,7 @@ document.querySelectorAll('.dialog-modal').forEach(dialog => {
             copyItem.addEventListener("click", (e) => {
                 e.stopPropagation();
                 navigator.clipboard.writeText(contentDiv.innerText).then(() => {
-                    showToast("copied!");
+                    showToast("Copied to clipboard!");
                 }).catch(err => console.error("Copy failed", err));
                 dropdown.classList.remove("show");
             });
@@ -1964,6 +2075,7 @@ document.querySelectorAll('.dialog-modal').forEach(dialog => {
                  console.error(`Current chat ID ${currentChatId} is invalid.`);
                  switchChat(Object.keys(allChats)[0]); 
             }
+            // After potential recovery, try saving again if chat is now valid
             if (currentChatId && allChats[currentChatId]) {
                  allChats[currentChatId].messages.push({ sender, content });
                  saveChats();
@@ -1998,19 +2110,61 @@ document.querySelectorAll('.dialog-modal').forEach(dialog => {
         addMessageToUI("user", messageText);
         saveMessage("user", messageText); 
 
+        // --- DYNAMIC PROMPT CONSTRUCTION ---
+        let basePromptForAPI = isToDoListModeActive ? todoListPrompt : defaultPromptBase;
+
+        if (currentUserSettings && currentUserSettings.chatbot_customization_enabled) {
+            let customizationInstructions = "\n\n--- USER CUSTOMIZATION ---\n";
+            if (currentUserSettings.chatbot_nickname) {
+                customizationInstructions += `The user prefers to be called "${currentUserSettings.chatbot_nickname}". Please address them by this name.\n`;
+            } else {
+                customizationInstructions += "Address the user generally (e.g., 'User', or based on conversation context if no specific name preference is set).\n";
+            }
+
+            switch (currentUserSettings.chatbot_tone) {
+                case "professional_concise":
+                    customizationInstructions += "Adopt a professional and concise tone in your responses.\n";
+                    break;
+                case "humorous_witty":
+                    customizationInstructions += "Adopt a humorous and witty tone. Be creative and engaging, but remain helpful and on-topic.\n";
+                    break;
+                case "custom":
+                    if (!currentUserSettings.chatbot_custom_instructions) {
+                         customizationInstructions += "Maintain a friendly and supportive tone (default for custom with no specific instructions).\n";
+                    }
+                    // If custom_instructions exist, they will be added below and might dictate the tone.
+                    break;
+                default: // friendly_supportive or any other/undefined value
+                    customizationInstructions += "Maintain a friendly and supportive tone.\n";
+            }
+
+            if (currentUserSettings.chatbot_custom_instructions) {
+                customizationInstructions += `Adhere to the following user-provided guidelines for your responses: (dont cross ethics) "${currentUserSettings.chatbot_custom_instructions}"\n`;
+            }
+
+            if (currentUserSettings.chatbot_user_context) {
+                customizationInstructions += `Keep this user-specific context in mind: "${currentUserSettings.chatbot_user_context}"\n`;
+            }
+            customizationInstructions += "--- END USER CUSTOMIZATION ---\n";
+            basePromptForAPI += customizationInstructions;
+        }
+        // --- END DYNAMIC PROMPT CONSTRUCTION ---
+
         const currentMessages = allChats[currentChatId]?.messages || [];
-        const conversationHistoryForAPI = currentMessages
+        const historySlice = currentMessages.slice(-10); // Send last 10 messages (5 turns approx)
+        const conversationHistoryForAPI = historySlice
             .map(msg => `${msg.sender === "user" ? "User" : "AI"}: ${msg.content}`)
             .join("\n");
 
-        let finalPrompt = promptBase;
+        let finalPrompt;
         if (isToDoListModeActive) {
-            finalPrompt = todoListPrompt; 
-            finalPrompt += "\n\nConversation History (leading to To-Do request):\n" + conversationHistoryForAPI;
-
+            finalPrompt = basePromptForAPI + "\n\nConversation History (leading to To-Do request):\n" + conversationHistoryForAPI;
+            // The user's latest message is already part of conversationHistoryForAPI as it's added before this function call.
+            // If needed, it could be explicitly added: finalPrompt += "\n\nUser's latest message for To-Do: " + messageText;
         } else {
-            finalPrompt += "\n\nConversation History:\n" + conversationHistoryForAPI;
+            finalPrompt = basePromptForAPI + "\n\nConversation History:\n" + conversationHistoryForAPI;
         }
+        // console.log("Final prompt to API:", finalPrompt); // For debugging
 
         try {
             const response = await fetch(`${serverUrl}/api/chat`, { 
@@ -2022,7 +2176,8 @@ document.querySelectorAll('.dialog-modal').forEach(dialog => {
             });
 
             if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
+                const errorText = await response.text();
+                throw new Error(`HTTP error! status: ${response.status}, message: ${errorText}`);
             }
 
             const data = await response.json();
@@ -2053,7 +2208,7 @@ document.querySelectorAll('.dialog-modal').forEach(dialog => {
 
         } catch (error) {
             console.error("Error sending message:", error);
-            const errorMsg = `Sorry, there was an error connecting to the assistant , please make sure your device connected to a network. Please try again later. (${error.message})`;
+            const errorMsg = `Sorry, there was an error connecting to the assistant. Please ensure you're connected to a network and try again. (Details: ${error.message})`;
             addMessageToUI("bot", errorMsg);
             saveMessage("bot", errorMsg);
         } finally {
@@ -2139,16 +2294,31 @@ document.querySelectorAll('.dialog-modal').forEach(dialog => {
         micButton.title = "Speak";
     }
 
-    function showToast(message) {
+    function showToast(message, type = 'normal', duration = 3000) {
         toast.textContent = message;
-        toast.classList.add("show");
+        toast.className = 'toast show'; // Reset classes
+        if (type === 'error') {
+            toast.classList.add('error');
+        }
+        // Add other types like 'success', 'warning' if needed
         setTimeout(() => {
-            toast.classList.remove("show");
-        }, 3000); 
+            toast.classList.remove('show');
+        }, duration);
     }
 
-    function initializeApp() {
-        // Theme applied by applyThemeSynchronized() call above
+
+    async function initializeApp() {
+        if(pageLoader) pageLoader.style.display = 'flex';
+        
+        applyThemeSynchronized(); // Apply theme early, page loader bg depends on it.
+        
+        await fetchUserSettings(); // Fetch settings before loading chats or other initializations
+
+        if(pageLoader) {
+            pageLoader.style.opacity = '0';
+            setTimeout(() => { pageLoader.style.display = 'none'; }, 300); // Hide after transition
+        }
+        
         loadChats(); 
         const savedState = localStorage.getItem("sidebarState_ClassMate");
         const mobileView = isMobileView();
@@ -2162,7 +2332,7 @@ document.querySelectorAll('.dialog-modal').forEach(dialog => {
             if (savedState === "open") {
                 sidebar.classList.remove("collapsed");
                 appContainer.classList.remove("sidebar-hidden");
-            } else {
+            } else { // Default to collapsed on desktop if no state or "collapsed"
                 sidebar.classList.add("collapsed");
                 appContainer.classList.add("sidebar-hidden");
             }
@@ -2177,6 +2347,7 @@ document.querySelectorAll('.dialog-modal').forEach(dialog => {
 
         checkForQueryParameters();
     }
+
 
     window.addEventListener("resize", () => {
         clearTimeout(resizeTimeout);
@@ -2239,7 +2410,7 @@ document.querySelectorAll('.dialog-modal').forEach(dialog => {
             showToast("To-do list saved to Task Manager!");
         } catch (e) {
             console.error("Failed to save to Task Manager:", e);
-            showToast("Error saving To-Do list.");
+            showToast("Error saving To-Do list.", "error");
         }
     }
 
@@ -2260,17 +2431,10 @@ document.querySelectorAll('.dialog-modal').forEach(dialog => {
             showToast("Saved to notes!");
         } catch (e) {
             console.error("Failed to save note:", e);
-            showToast("Error saving note.");
+            showToast("Error saving note.", "error");
         }
     }
 
-    function showToast(message, duration = 3000) {
-        toast.textContent = message;
-        toast.classList.add("show");
-        setTimeout(() => {
-            toast.classList.remove("show");
-        }, duration);
-    }
 </script>
 </body>
 </html>
