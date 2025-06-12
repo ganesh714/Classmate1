@@ -47,11 +47,11 @@
       --bg: #0a0a0a;
       --text: #ffffff;
       --text-secondary: rgba(255, 255, 255, 0.7);
-      --accent: #284cff; /* Keeping this one for stronger dark mode accent */
+      --accent: #284cff; 
       --accent-secondary: #ff3a8c;
       --accent-tertiary: #00c2ff;
-      --accent-dark: #2a8cf4; /* Was original dark mode accent, can be used for secondary dark accents */
-      --card-bg: rgba(0, 0, 0, 0.9); /* More opaque for better contrast */
+      --accent-dark: #2a8cf4; 
+      --card-bg: rgba(0, 0, 0, 0.9); 
       --card-border: rgba(255, 255, 255, 0.1);
       --btn-primary: linear-gradient(135deg, #a18dff, #7d5fff);
       --btn-secondary: linear-gradient(135deg, #ff3a8c, #ff6b6b);
@@ -60,15 +60,15 @@
       --hero-gradient: linear-gradient(135deg, #2a8cf4 0%, #2d00b6 25%, #aa046d 70%, #f40039 100%);
       --hero-gradient-dark: linear-gradient(135deg, #4361ee 0%, #7209b7 30%, #f72585 70%, #ff006e 100%);
       --grid-color: rgba(255, 255, 255, 0.05);
-      --glow: 0 0 20px rgba(138, 143, 255, 0.4); /* Re-evaluating glow for dark mode */
+      --glow: 0 0 20px rgba(138, 143, 255, 0.4);
       --header-bg: rgba(0, 0, 0, 0.9);
       --header-text: #ffffff;
       --header-shadow: 0 4px 30px rgba(255, 255, 255, 0.15);
-      --input-bg: #1a1a1a; /* Darker input bg */
-      --input-border: #333; /* Slightly lighter border */
+      --input-bg: #1a1a1a; 
+      --input-border: #333; 
       --input-text: #ffffff;
-      --menu-bg: #1a1a1a; /* Darker menu */
-      --menu-hover: rgba(138, 143, 255, 0.2); /* Adjusted hover */
+      --menu-bg: #1a1a1a; 
+      --menu-hover: rgba(138, 143, 255, 0.2); 
       --modal-bg: #1a1a1a;
     }
 
@@ -82,7 +82,7 @@
     body {
       background-color: var(--bg);
       color: var(--text);
-      transition: background-color 0.3s ease, color 0.3s ease; /* Adjusted transition for body */
+      transition: background-color 0.3s ease, color 0.3s ease; 
       overflow-x: hidden;
     }
 
@@ -120,7 +120,7 @@
       left: 0;
       top: 0;
       z-index: 10;
-      transition: width 0.3s ease, background-color 0.3s ease, border-color 0.3s ease; /* Added transitions */
+      transition: width 0.3s ease, background-color 0.3s ease, border-color 0.3s ease; 
       border-right: 1px solid var(--card-border);
     }
 
@@ -137,7 +137,7 @@
       width: 40px;
       height: 40px;
       border-radius: 50%;
-      background-color: var(--card-bg); /* Use card-bg for consistency */
+      background-color: var(--card-bg); 
       border: 1px solid var(--accent);
       display: flex;
       align-items: center;
@@ -163,7 +163,7 @@
 
     .expand-button i {
       font-size: 20px;
-      background-color: var(--card-border); /* Use card-border for bg */
+      background-color: var(--card-border); 
       padding: 20px 5px;
       border-radius: 0px 10px 10px 0px;
       color: var(--text);
@@ -199,13 +199,13 @@
       background-color: var(--menu-hover);
       transform: translateY(-2px);
     }
-    .nav-item a { /* Ensure links within nav-item are styled correctly */
+    .nav-item a { 
         display: flex;
         align-items: center;
         justify-content: center;
         width: 100%;
         height: 100%;
-        color: inherit; /* Inherit color from parent i tag */
+        color: inherit; 
         text-decoration: none;
     }
 
@@ -224,7 +224,15 @@
       border-radius: 50%;
       object-fit: cover;
       border: 2px solid var(--accent);
+      transition: opacity 0.2s ease-in-out; /* Added for loading state */
     }
+
+    /* Style for avatar loading state */
+    .user-avatar.avatar-loading-placeholder {
+      opacity: 0.6;
+      background-color: var(--card-border); /* Placeholder background */
+    }
+
 
     /* Vertical Panel - Expanded Version */
     .vertical-panel-expanded {
@@ -240,7 +248,7 @@
       top: 0;
       z-index: 10;
       display: none;
-      transition: width 0.3s ease, background-color 0.3s ease, border-color 0.3s ease; /* Added transitions */
+      transition: width 0.3s ease, background-color 0.3s ease, border-color 0.3s ease; 
       border-right: 1px solid var(--card-border);
     }
 
@@ -253,11 +261,10 @@
     }
 
     .logo-text {
-      /* color: var(--accent); Original color */
       font-weight: 600;
       font-size: 18px;
       margin-left: 8px;
-      background: linear-gradient(to right, var(--accent-dark), var(--accent-secondary)); /* Consistent gradient */
+      background: linear-gradient(to right, var(--accent-dark), var(--accent-secondary)); 
       -webkit-background-clip: text;
       background-clip: text;
       color: transparent;
@@ -307,7 +314,7 @@
       border-radius: 6px;
       margin: 0 8px;
     }
-    .nav-item-expanded a { /* Ensure links fill the item and inherit styles */
+    .nav-item-expanded a { 
         display: flex;
         align-items: center;
         width: 100%;
@@ -364,7 +371,7 @@
     }
 
     .nav-item-expanded:hover:not(.active) .nav-icon i,
-    .nav-item-expanded:hover:not(.active) .nav-text { /* Hover state for text too */
+    .nav-item-expanded:hover:not(.active) .nav-text { 
       color: var(--accent);
     }
 
@@ -381,7 +388,7 @@
     .toggle-switch {
       width: 40px;
       height: 20px;
-      background-color: var(--card-border); /* Use card-border for off state */
+      background-color: var(--card-border); 
       border-radius: 10px;
       margin-left: auto;
       position: relative;
@@ -393,12 +400,12 @@
     .toggle-knob {
       width: 16px;
       height: 16px;
-      background-color: var(--card-bg); /* Use card-bg for knob */
+      background-color: var(--card-bg); 
       border-radius: 50%;
       transition: transform 0.2s ease;
       box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     }
-    .dark-mode .toggle-knob { /* Adjust knob color for dark mode */
+    .dark-mode .toggle-knob { 
         background-color: var(--input-text);
     }
 
@@ -439,9 +446,8 @@
       flex-grow: 1;
       background-color: var(--bg);
       margin-left: 80px;
-      transition: margin-left 0.3s ease, background-color 0.3s ease; /* Added background transition */
+      transition: margin-left 0.3s ease, background-color 0.3s ease; 
       min-height: 100vh;
-      /* padding: 24px; REMOVED padding from main-content to allow iframe to fill */
     }
 
     .main-content-expanded {
@@ -462,36 +468,16 @@
 
     /* Responsive adjustments */
     @media (max-width: 768px) {
-      .vertical-panel-narrow {
-        width: 60px;
-      }
-      
-      .vertical-panel-expanded {
-        width: 200px;
-      }
-      
-      .main-content {
-        margin-left: 60px;
-        /* padding: 16px; */
-      }
-      
-      .main-content-expanded {
-        margin-left: 200px;
-      }
-      
-      .expand-button i {
-        padding: 15px 4px;
-      }
+      .vertical-panel-narrow { width: 60px; }
+      .vertical-panel-expanded { width: 200px; }
+      .main-content { margin-left: 60px; }
+      .main-content-expanded { margin-left: 200px; }
+      .expand-button i { padding: 15px 4px; }
     }
 
     @media (max-width: 480px) {
-      .vertical-panel-expanded {
-        width: 180px;
-      }
-      
-      .main-content-expanded {
-        margin-left: 180px;
-      }
+      .vertical-panel-expanded { width: 180px; }
+      .main-content-expanded { margin-left: 180px; }
     }
 
     /* Animation for smoother transitions */
@@ -549,7 +535,7 @@
         />
       </div>
       <div class="nav-item logout" id="logoutBtnNarrow">
-        <a href="#"> <!-- Href changed to # to prevent default nav, handled by JS -->
+        <a href="#"> 
             <i class="fas fa-sign-out-alt" title="Logout"></i>
         </a>
       </div>
@@ -560,7 +546,7 @@
       <div class="panel-header">
         <div class="logo-container">
           <div class="logo"><i class="fas fa-robot"></i></div>
-          <span class="logo-text">ClassmateAI</span> <!-- Updated name -->
+          <span class="logo-text">ClassmateAI</span> 
         </div>
         <button class="collapse-button"><i class="fas fa-chevron-left"></i></button>
       </div>
@@ -621,7 +607,7 @@
         </div>
       </div>
       <div class="nav-item-expanded logout" id="logoutBtnExpanded">
-         <a href="#"> <!-- Href changed to # -->
+         <a href="#"> 
             <div class="nav-icon"><i class="fas fa-sign-out-alt"></i></div>
             <span class="nav-text">Log out</span>
         </a>
@@ -641,7 +627,7 @@
       const expandBtn = narrowPanel.querySelector(".expand-button");
       const collapseBtn = expandedPanel.querySelector(".collapse-button");
       const navItems = document.querySelectorAll(
-        ".nav-item, .nav-item-expanded" // Includes logout items if they have these classes
+        ".nav-item, .nav-item-expanded"
       );
       const darkToggle = document.getElementById("darkToggle");
       const darkToggleExp = document.getElementById("darkToggleExpanded");
@@ -653,25 +639,96 @@
       const expandedUserName = document.getElementById('expandedUserName');
       const expandedUserEmail = document.getElementById('expandedUserEmail');
       const defaultAvatar = 'https://randomuser.me/api/portraits/men/32.jpg';
+      
+      const API_BASE_URL = "https://classmate1-ffw7.onrender.com"; 
 
 
-      // Check for auth token on dashboard load
-      if (!localStorage.getItem('auth_token')) {
-          window.location.href = '../../index.html'; // Or your main login page
-          return; // Stop further execution if not logged in
+      const authToken = localStorage.getItem('auth_token');
+      if (!authToken) {
+          window.location.href = '../../index.html'; 
+          return; 
       }
 
-      function updateUserInfo() {
-        const userName = localStorage.getItem('user_name') || 'User';
-        const userEmail = localStorage.getItem('user_email') || 'user@example.com'; // Assuming email is stored
-        const userAvatar = localStorage.getItem('user_avatar') || defaultAvatar;
+      async function updateUserInfo() {
+        const token = localStorage.getItem('auth_token');
 
-        if (narrowUserAvatar) narrowUserAvatar.src = userAvatar;
-        if (expandedUserAvatar) expandedUserAvatar.src = userAvatar;
-        if (expandedUserName) expandedUserName.textContent = userName;
-        if (expandedUserEmail) expandedUserEmail.textContent = userEmail; // You might show email or a role
+        // --- 1. Show loading state ---
+        if (narrowUserAvatar) narrowUserAvatar.classList.add('avatar-loading-placeholder');
+        if (expandedUserAvatar) expandedUserAvatar.classList.add('avatar-loading-placeholder');
+        if (expandedUserName) expandedUserName.textContent = "Loading...";
+        if (expandedUserEmail) expandedUserEmail.textContent = ""; // Or "Loading email..."
+
+        // Initialize with localStorage values or defaults as fallbacks
+        let finalUserName = localStorage.getItem('user_name') || 'User';
+        let finalUserEmail = localStorage.getItem('user_email') || 'user@example.com';
+        let finalUserAvatar = localStorage.getItem('user_avatar') || defaultAvatar;
+
+        if (!token) {
+            console.log("Dashboard: No auth token, using local/default user info.");
+            // Fallback values are already set in finalUser... variables
+        } else {
+            try {
+                const apiUrl = `${API_BASE_URL}/api/me`;
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`,
+                        'Accept': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    const userData = await response.json();
+                    finalUserName = userData.name || finalUserName; 
+                    finalUserEmail = userData.email || finalUserEmail;
+                    
+                    finalUserAvatar = userData.avatar || localStorage.getItem('user_avatar') || defaultAvatar; 
+                    if (!userData.avatar && !localStorage.getItem('user_avatar')) {
+                        finalUserAvatar = defaultAvatar;
+                    }
+
+                    localStorage.setItem('user_name', finalUserName);
+                    localStorage.setItem('user_email', finalUserEmail);
+                    if (userData.avatar) { 
+                        localStorage.setItem('user_avatar', finalUserAvatar);
+                    }
+                    console.log("Dashboard: User info updated from /api/me");
+
+                } else if (response.status === 401) { 
+                    console.error('Dashboard: Unauthorized. Logging out.');
+                    // Clean up UI loading state before redirecting via logout
+                    if (narrowUserAvatar) narrowUserAvatar.classList.remove('avatar-loading-placeholder');
+                    if (expandedUserAvatar) expandedUserAvatar.classList.remove('avatar-loading-placeholder');
+                    // Set to default before logout to avoid "Loading..." flash if logout is slow
+                    if (expandedUserName) expandedUserName.textContent = 'User';
+                    if (expandedUserEmail) expandedUserEmail.textContent = 'user@example.com';
+
+                    handleLogout(null, true); 
+                    return; 
+                } else {
+                    console.error('Dashboard: Failed to fetch user details, using local/default.', response.status, await response.text());
+                    // Fallback values in finalUser... will be used
+                }
+            } catch (error) {
+                console.error('Dashboard: Network error fetching user details, using local/default.', error);
+                // Fallback values in finalUser... will be used
+            }
+        }
+        
+        // --- 2. Update UI with final values and remove loading state ---
+        if (narrowUserAvatar) {
+            narrowUserAvatar.src = finalUserAvatar;
+            narrowUserAvatar.classList.remove('avatar-loading-placeholder');
+        }
+        if (expandedUserAvatar) {
+            expandedUserAvatar.src = finalUserAvatar;
+            expandedUserAvatar.classList.remove('avatar-loading-placeholder');
+        }
+        if (expandedUserName) expandedUserName.textContent = finalUserName;
+        if (expandedUserEmail) expandedUserEmail.textContent = finalUserEmail;
       }
-      updateUserInfo(); // Initial call
+      
+      updateUserInfo(); 
 
 
       // Function to handle panel expansion
@@ -694,7 +751,7 @@
       if (localStorage.getItem("panelState") === "expanded") {
         expandPanel();
       } else {
-        collapsePanel(); // Default to narrow or restored narrow
+        collapsePanel(); 
       }
 
 
@@ -708,11 +765,11 @@
             if (toggleSwitch) {
                 toggleSwitch.classList.toggle("active", isDark);
             }
-            if(icon) icon.className = isDark ? "fas fa-sun" : "fas fa-moon"; // Update icon
+            if(icon) icon.className = isDark ? "fas fa-sun" : "fas fa-moon"; 
         }
-        if(darkToggle){ // Narrow panel
+        if(darkToggle){ 
             const icon = darkToggle.querySelector("i");
-            if(icon) icon.className = isDark ? "fas fa-sun" : "fas fa-moon"; // Update icon
+            if(icon) icon.className = isDark ? "fas fa-sun" : "fas fa-moon"; 
             if(icon) icon.title = isDark ? "Light Mode" : "Dark Mode";
         }
       };
@@ -720,11 +777,9 @@
       const dispatchThemeToIframe = (isDark) => {
         if (contentFrame && contentFrame.contentWindow) {
             try {
-                // Check if iframe's document is accessible and ready
                 if (contentFrame.contentDocument && contentFrame.contentDocument.readyState === 'complete') {
                     contentFrame.contentWindow.postMessage({ type: 'themeChange', darkMode: isDark }, '*');
                 } else {
-                    // Fallback for when iframe is still loading
                     contentFrame.addEventListener('load', function onDispatchLoad() {
                         if (contentFrame.contentWindow) {
                            contentFrame.contentWindow.postMessage({ type: 'themeChange', darkMode: isDark }, '*');
@@ -739,8 +794,8 @@
       
       const setDarkMode = (isDark, dispatchToIframe = true) => {
         document.body.classList.toggle("dark-mode", isDark);
-        localStorage.setItem("darkMode", isDark ? "enabled" : "disabled"); // For general use
-        localStorage.setItem("theme", isDark ? "dark" : "light"); // For compatibility with settings.html
+        localStorage.setItem("darkMode", isDark ? "enabled" : "disabled"); 
+        localStorage.setItem("theme", isDark ? "dark" : "light"); 
         updateDashboardToggleStates(isDark);
         if (dispatchToIframe) {
             dispatchThemeToIframe(isDark);
@@ -760,81 +815,68 @@
 
       contentFrame.addEventListener('load', () => {
         const currentParentThemeIsDark = document.body.classList.contains("dark-mode");
-        setTimeout(() => { // Give iframe a moment to set up its listeners
+        setTimeout(() => { 
             dispatchThemeToIframe(currentParentThemeIsDark);
-            updateUserInfo(); // Update user info in panel when iframe loads, e.g., after settings change
         }, 150); 
       });
       
       navItems.forEach((item) => {
         item.addEventListener("click", (e) => {
-          const isLinkInside = e.target.closest('a'); // Check if click is on or inside an <a>
+          const isLinkInside = e.target.closest('a'); 
           
           const targetIsToggle = item.id === "darkToggle" || item.id === "darkToggleExpanded";
           const targetIsLogout = item.classList.contains("logout");
 
-          if (targetIsToggle) return; // Handled by their own listeners
+          if (targetIsToggle) return; 
           if (targetIsLogout) {
-            // Logout logic handled by separate listeners for logout buttons
-            // If the item itself is the logout trigger (not a link inside), handle here
-            // For now, assuming logout is handled by specific logout button listeners
             return; 
           }
           
           const pageToLoad = item.dataset.page;
 
           document.querySelectorAll(".nav-item:not(.logout), .nav-item-expanded:not(.logout)").forEach(i => {
-            if (i.id !== 'darkToggle' && i.id !== 'darkToggleExpanded') { // Exclude toggles
+            if (i.id !== 'darkToggle' && i.id !== 'darkToggleExpanded') { 
               i.classList.remove("active");
             }
           });
 
           if (pageToLoad) {
             document.querySelectorAll(`.nav-item[data-page="${pageToLoad}"], .nav-item-expanded[data-page="${pageToLoad}"]`).forEach(match => {
-              match.classList.add("active");
+                match.classList.add("active");
             });
             contentFrame.src = pageToLoad; 
           }
         });
       });
       
-      // Listen to messages from iframe (e.g., for logout or theme changes initiated by iframe)
       window.addEventListener('message', (event) => {
-        // IMPORTANT: For production, validate event.origin
-        // Example: if (event.origin !== "https://your-app-domain.com") return;
-
         if (event.data) {
             if (event.data.type === 'logout') {
                 console.log("Dashboard received logout message from iframe:", event.data.reason);
-                localStorage.removeItem('auth_token');
-                localStorage.removeItem('user_name');
-                localStorage.removeItem('user_email');
-                localStorage.removeItem('user_avatar');
-                window.location.href = '../../index.html'; // Adjust to your main login page
+                handleLogout(null, true); 
             } else if (event.data.type === 'themeChangeFromIframe') {
-                // Iframe changed the theme, update dashboard's state (but don't re-dispatch to itself)
                 setDarkMode(event.data.darkMode, false); 
             } else if (event.data.type === 'userProfileUpdatedInIframe') {
-                // If settings page updates profile and posts message
-                updateUserInfo();
+                console.log("Dashboard: User profile updated in iframe, refreshing dashboard info.");
+                updateUserInfo(); 
             }
         }
       });
       
-      // Logout buttons
-      function handleLogout(event) {
-          event.preventDefault(); // Prevent default if it's a link
-          console.log("Logout initiated by dashboard button.");
+      function handleLogout(event, programmatic = false) {
+          if (!programmatic && event) { 
+            event.preventDefault(); 
+          }
+          console.log("Logout initiated.");
           localStorage.removeItem('auth_token');
           localStorage.removeItem('user_name');
           localStorage.removeItem('user_email');
           localStorage.removeItem('user_avatar');
-          window.location.href = '../../index.html'; // Adjust to your main login page
+          window.location.href = '../../index.html'; 
       }
       document.getElementById("logoutBtnNarrow").addEventListener("click", handleLogout);
       document.getElementById("logoutBtnExpanded").addEventListener("click", handleLogout);
       
-      // Close expanded panel when clicking outside on mobile (if panel is not fixed and overlay not used)
       window.addEventListener("click", (e) => {
         if (window.innerWidth <= 768 && expandedPanel.style.display === "flex") {
           if (!expandedPanel.contains(e.target) && !narrowPanel.contains(e.target) && !e.target.closest('.expand-button')) {
@@ -843,18 +885,17 @@
         }
       });
 
-      // Also listen to storage events to catch external logouts (e.g., token cleared in another tab)
       window.addEventListener('storage', (e) => {
-        if (e.key === 'auth_token' && !e.newValue) { // Token was removed
+        if (e.key === 'auth_token' && !e.newValue) { 
             console.log("Auth token cleared externally, logging out dashboard.");
             window.location.href = '../../index.html'; 
         }
-        if (e.key === 'darkMode' || e.key === 'theme') { // Sync theme from other tabs
+        if (e.key === 'darkMode' || e.key === 'theme') { 
             const isDark = e.newValue === 'enabled' || e.newValue === 'dark';
-            setDarkMode(isDark, true); // Dispatch to iframe as well
+            setDarkMode(isDark, true); 
         }
         if (e.key === 'user_name' || e.key === 'user_avatar' || e.key === 'user_email') {
-            updateUserInfo(); // Update displayed user info if changed in another tab
+            updateUserInfo(); 
         }
       });
 
