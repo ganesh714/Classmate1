@@ -2113,7 +2113,7 @@ document.querySelectorAll('.dialog-modal').forEach(dialog => {
         // --- DYNAMIC PROMPT CONSTRUCTION ---
         let basePromptForAPI = isToDoListModeActive ? todoListPrompt : defaultPromptBase;
 
-        if (currentUserSettings && currentUserSettings.chatbot_customization_enabled) {
+        if (currentUserSettings && currentUserSettings.chatbot_customization_enabled && !isToDoListModeActive) {
             let customizationInstructions = "\n\n--- USER CUSTOMIZATION ---\n";
             if (currentUserSettings.chatbot_nickname) {
                 customizationInstructions += `The user prefers to be called "${currentUserSettings.chatbot_nickname}". Please address them by this name.\n`;
