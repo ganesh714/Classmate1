@@ -1396,6 +1396,7 @@
     let todoListPrompt = `IMPORTANT INSTRUCTION: You MUST generate the actual content for a to-do list or plan. Then, format YOUR GENERATED CONTENT according to the following multi-level structure. Fill in all placeholders like [Generated Goal Name] and [Generated Task X.Y] with specific, relevant information based on the user\'s request. Do not just show an empty template. Your entire response must be:
 
 Goal: [Generated Goal Name based on user query, e.g., Learn Python Basics]
+...
 Phase 1: [e.g., Foundational Concepts]
 - [Task 1.1, e.g., Understand Python syntax and indentation]
 - [Task 1.2, e.g., Learn variables and data types (integers, floats, strings, booleans)]
@@ -2164,7 +2165,6 @@ document.querySelectorAll('.dialog-modal').forEach(dialog => {
         } else {
             finalPrompt = basePromptForAPI + "\n\nConversation History:\n" + conversationHistoryForAPI;
         }
-        // console.log("Final prompt to API:", finalPrompt); // For debugging
 
         try {
             const response = await fetch(`${serverUrl}/api/chat`, { 
