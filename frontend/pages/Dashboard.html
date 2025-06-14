@@ -134,21 +134,12 @@
     }
 
     .logo {
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      background-color: var(--card-bg); 
-      border: 1px solid var(--accent);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: background-color 0.3s ease;
+      height: 50px;
+      filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.2));
+      transition: transform 0.3s ease, filter 0.3s ease;
     }
 
-    .logo i {
-      font-size: 18px;
-      color: var(--accent);
-    }
+    
 
     .expand-button {
       position: absolute;
@@ -497,7 +488,7 @@
     <!-- Narrow (icon-only) panel -->
     <div class="vertical-panel-narrow" id="narrowPanel">
       <div class="logo-container">
-        <div class="logo"><i class="fas fa-robot"></i></div>
+        <img class = "logo" src="../logos/logo.png" alt="logo">
         <div class="expand-button"><i class="fas fa-chevron-right"></i></div>
       </div>
 
@@ -545,7 +536,7 @@
     <div class="vertical-panel-expanded" id="expandedPanel">
       <div class="panel-header">
         <div class="logo-container">
-          <div class="logo"><i class="fas fa-robot"></i></div>
+          <img class = "logo" src="../logos/logo.png" alt="logo">
           <span class="logo-text">ClassmateAI</span> 
         </div>
         <button class="collapse-button"><i class="fas fa-chevron-left"></i></button>
