@@ -457,9 +457,9 @@
   <!-- Header with logo and name -->
   <header>
     <div class="logo-container">
-      <img src="../logos/logo.png" alt="ClassmateAI Logo" class="logo">
-      <span class="logo-text">ClassmateAI</span>
-    </div>
+  <img src="../logos/logo-light.png" alt="ClassmateAI Logo" class="logo" id="headerLogo">
+  <span class="logo-text">ClassmateAI</span>
+</div>
     <button class="theme-toggle" id="themeToggle">
       <i class="fas fa-sun"></i>
       <i class="fas fa-moon"></i>
@@ -474,8 +474,8 @@
     <div class="auth-card">
       <div class="auth-header">
         <div class="auth-logo">
-          <img src="../logos/logo.png" alt="ClassmateAI Logo">
-        </div>
+  <img src="../logos/logo-light.png" alt="ClassmateAI Logo" id="authLogo">
+</div>
         <h1 class="auth-title">Welcome back</h1>
         <p class="auth-subtitle">Sign in to your account to continue</p>
       </div>
@@ -564,6 +564,7 @@
         document.body.classList.add('dark-mode');
         localStorage.setItem('theme', 'dark');
       }
+      updateLogos();
     }
     
     // Add event listener to toggle button
@@ -636,6 +637,25 @@
         submitButton.innerHTML = originalButtonHTML;
       }
     });
+
+// Function to update logos based on theme
+function updateLogos() {
+  const isDarkMode = document.body.classList.contains('dark-mode');
+  const headerLogo = document.getElementById('headerLogo');
+  const authLogo = document.getElementById('authLogo');
+  
+  if (isDarkMode) {
+    headerLogo.src = "../logos/logo-dark.png";
+    authLogo.src = "../logos/logo-dark.png";
+  } else {
+    headerLogo.src = "../logos/logo-light.png";
+    authLogo.src = "../logos/logo-light.png";
+  }
+}
+
+// Call this function initially and whenever theme changes
+updateLogos();
+
   </script>
 </body>
 </html>
