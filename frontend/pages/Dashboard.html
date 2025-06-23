@@ -481,6 +481,131 @@
       animation: fadeIn 0.3s ease forwards;
     }
   </style>
+  <style>
+  /* Previous CSS remains the same until the media queries section */
+
+  /* Responsive adjustments */
+  @media (max-width: 768px) {
+    /* Mobile-specific styles */
+    .app-container {
+      flex-direction: column;
+    }
+
+    /* Vertical Panel - Mobile Bottom Navigation */
+    .vertical-panel-narrow {
+      width: 100%;
+      height: 60px;
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      top: auto;
+      flex-direction: row;
+      padding: 0;
+      justify-content: space-around;
+      align-items: center;
+      border-top: 1px solid var(--card-border);
+      border-right: none;
+      z-index: 1000;
+    }
+
+    .vertical-panel-expanded {
+      display: none !important; /* Hide expanded panel on mobile */
+    }
+
+    .logo-container,
+    .expand-button,
+    .spacer,
+    .user-profile {
+      display: none; /* Hide these elements on mobile */
+    }
+
+    .nav-item {
+      width: 50px;
+      height: 50px;
+      margin: 0;
+      border-radius: 0;
+      position: relative;
+    }
+
+    .nav-item i {
+      font-size: 20px;
+    }
+
+    .nav-item.active::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: var(--accent);
+    }
+
+    .nav-item.active::after {
+      display: none;
+    }
+
+    /* Main Content adjustments for mobile */
+    .main-content {
+      margin-left: 0;
+      margin-bottom: 60px; /* Space for bottom nav */
+      min-height: calc(100vh - 60px);
+    }
+
+    .main-content-expanded {
+      margin-left: 0;
+    }
+
+    /* Hide dark mode toggle in narrow mobile view */
+    #darkToggle {
+      display: none;
+    }
+
+    /* Show logout only in expanded mobile view (if needed) */
+    .logout {
+      display: none;
+    }
+  }
+
+  /* Tablet adjustments (keep existing) */
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .vertical-panel-narrow { width: 60px; }
+    .vertical-panel-expanded { width: 200px; }
+    .main-content { margin-left: 60px; }
+    .main-content-expanded { margin-left: 200px; }
+    .expand-button i { padding: 15px 4px; }
+  }
+
+  /* Small desktop adjustments (keep existing) */
+  @media (min-width: 1025px) and (max-width: 1200px) {
+    .vertical-panel-expanded { width: 220px; }
+    .main-content-expanded { margin-left: 220px; }
+  }
+
+  /* Special case for very small mobile devices */
+  @media (max-width: 400px) {
+    .nav-item {
+      width: 45px;
+      height: 45px;
+    }
+    
+    .nav-item i {
+      font-size: 18px;
+    }
+  }
+
+  /* Landscape orientation adjustments */
+  @media (max-width: 768px) and (orientation: landscape) {
+    .vertical-panel-narrow {
+      height: 50px;
+    }
+    
+    .main-content {
+      margin-bottom: 50px;
+      min-height: calc(100vh - 50px);
+    }
+  }
+</style>
 </head>
 <body>
   <div class="grid-bg"></div>
