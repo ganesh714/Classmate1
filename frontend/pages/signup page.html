@@ -453,15 +453,29 @@
         padding: 1.5rem 1rem;
       }
     }
+
+    /* In your existing CSS, add these rules */
+.logo-dark {
+  display: none;
+}
+
+.dark-mode .logo-light {
+  display: none;
+}
+
+.dark-mode .logo-dark {
+  display: block;
+}
   </style>
 </head>
 <body>
   <!-- Header with logo and name -->
   <header>
     <div class="logo-container">
-      <img src="../logos/logo.png" alt="ClassmateAI Logo" class="logo">
-      <span class="logo-text">ClassmateAI</span>
-    </div>
+  <img src="../logos/logo-light.png" alt="ClassmateAI Logo" class="logo logo-light">
+  <img src="../logos/logo-dark.png" alt="ClassmateAI Logo" class="logo logo-dark">
+  <span class="logo-text">ClassmateAI</span>
+</div>
     <button class="theme-toggle" id="themeToggle">
       <i class="fas fa-sun"></i>
       <i class="fas fa-moon"></i>
@@ -476,8 +490,9 @@
     <div class="auth-card">
       <div class="auth-header">
         <div class="auth-logo">
-          <img src="../logos/logo.png" alt="ClassmateAI Logo">
-        </div>
+  <img src="../logos/logo-light.png" alt="ClassmateAI Logo" class="logo logo-light">
+  <img src="../logos/logo-dark.png" alt="ClassmateAI Logo" class="logo logo-dark">
+</div>
         <h1 class="auth-title">Create your account</h1> <!-- Updated Title -->
         <p class="auth-subtitle">Join ClassmateAI today</p> <!-- Updated Subtitle -->
       </div>
